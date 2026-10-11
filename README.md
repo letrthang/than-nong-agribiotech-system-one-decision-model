@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="Licence: Apache-2.0" src="https://img.shields.io/badge/licence-Apache--2.0-blue"></a>
-  <img alt="Status: design" src="https://img.shields.io/badge/status-design-orange">
+  <img alt="Status: ongoing" src="https://img.shields.io/badge/status-ongoing-orange">
   <a href="https://docs.typesafe.ai/introduction"><img alt="API: Jev-compatible System One" src="https://img.shields.io/badge/API-Jev--compatible%20%2Fv1%2Fsystemone-6f42c1"></a>
   <img alt="Languages: English, Vietnamese, Japanese" src="https://img.shields.io/badge/languages-en%20%C2%B7%20vi%20%C2%B7%20ja-2ea44f">
   <a href="https://huggingface.co/jhu-clsp/mmBERT-base"><img alt="Base encoder: mmBERT" src="https://img.shields.io/badge/base-mmBERT-yellow"></a>
@@ -42,8 +42,8 @@ medicine, it works the way TypeSafe's [Jev](https://docs.typesafe.ai/introductio
 that any System One caller can use. In AIMTAS it is the planned **replacement for the current System 1 model,
 [`aimtas-system-one-laya-slm`](https://github.com/letrthang/aimtas-system-one-laya-slm)**.
 
-> **Status (2026-10-11): design.** Nothing is trained yet. This repo holds the plan and, later, the training code and the
-> server. See [`architecture.md`](architecture.md) for the full design.
+> **Status: ongoing.** Design and data preparation are in progress; training and the server follow, step by step, in this
+> repo. See [`architecture.md`](architecture.md) for the full design.
 
 ## What makes it ours
 
