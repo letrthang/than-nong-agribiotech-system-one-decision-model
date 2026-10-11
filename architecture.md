@@ -14,7 +14,7 @@ the training method and the server.
    before it learns any task.
 2. **Our own decision heads**, trained with proper-scoring-rule losses and calibrated.
 3. **Our own server** implementing TypeSafe's `POST /v1/systemone` API, so AIMTAS callers switch to it by configuration.
-4. Two sizes: **Edge** (gateway CPU) and **Cloud**.
+4. Two models: **Edge** for the farm gateway (CPU) and **Skynet**, the bigger one, for the cloud server.
 
 ```
                  ┌──────────────────── training (this repo) ────────────────────┐
@@ -31,7 +31,8 @@ the training method and the server.
   Japanese** first, for the **eleven focus countries** of §6.0 first.
 - Calibrated probabilities that callers can gate on, plus an **escalate** probability (hand the case to System 2 or a
   person).
-- Two sizes: **Edge** (runs on the AIMTAS gateway's CPU, ≤ ~150 M parameters) and **Cloud** (~300 M).
+- Two models: **Edge** (the AIMTAS gateway on the farm, on its CPU, ≤ ~150 M parameters) and **Skynet** (the AIMTAS cloud
+  server, bigger, ~300 M).
 - **[Jev](https://docs.typesafe.ai/introduction)-compatible:** speak TypeSafe's System One API (`POST /v1/systemone`, [docs](https://docs.typesafe.ai/introduction))
   with the same request and answer shapes and question types (`choice`, `score`, `noul`) as Jev, so any Jev caller (the
   AIMTAS gateway and cloud among them) can switch to it by configuration.
@@ -52,8 +53,8 @@ as English. It outputs one vector per token and has no task head; that is what w
 
 | Variant | Start from | Params | Layers / hidden | Use |
 |---|---|---|---|---|
-| **Thannong-Agribiotech-Edge** | `jhu-clsp/mmBERT-small` | 140 M (42 M without embeddings) | 22 / 384 | gateway CPU; multilingual |
-| **Thannong-Agribiotech** (cloud) | `jhu-clsp/mmBERT-base` | 307 M (110 M without embeddings) | 22 / 768 | best quality per size among open multilingual encoders |
+| **Thannong-Agribiotech-Edge** | `jhu-clsp/mmBERT-small` | 140 M (42 M without embeddings) | 22 / 384 | the **farm gateway** (CPU, works offline); multilingual |
+| **Thannong-Agribiotech-Skynet** | `jhu-clsp/mmBERT-base` | 307 M (110 M without embeddings) | 22 / 768 | the **cloud server**: bigger, best quality per size among open multilingual encoders |
 
 - **Tokenizer: keep mmBERT's 256k vocabulary unchanged.** New tokens would need untrained embeddings; DAPT teaches the
   domain's words through the existing sub-word pieces. Measure token counts of domain text before and after.
@@ -118,8 +119,8 @@ back:
 
 | Repo | Contents |
 |---|---|
-| `letrthang/thannong-agribiotech-skynet` | safetensors checkpoint, tokenizer, temperatures, `onnx/` (int8), model card, data card |
-| `letrthang/thannong-agribiotech-edge` | the Edge variant, same layout |
+| `letrthang/thannong-agribiotech-edge` | **Edge** — for the AIMTAS gateway on the farm: safetensors checkpoint, tokenizer, temperatures, `onnx/` (int8), model card, data card |
+| `letrthang/thannong-agribiotech-skynet` | **Skynet** — for the AIMTAS cloud server (bigger): same layout |
 
 ## 6. Data
 
@@ -220,7 +221,7 @@ filter).
 |---|---|---|---|
 | M1 spike (tiny heads, server, ONNX) | Mac (MPS) or free Kaggle T4 | hours | tiny data |
 | S1 DAPT, Edge (140 M), ~5 B tokens | 1× A100 / H100 80 GB | ~0.5–1 day | rented |
-| S1 DAPT, Cloud (307 M), ~10–20 B tokens | 1–4× A100 / H100 | ~1–4 days | rented; the largest cost (~US$100–1,000) |
+| S1 DAPT, Skynet (307 M), ~10–20 B tokens | 1–4× A100 / H100 | ~1–4 days | rented; the largest cost (~US$100–1,000) |
 | S2 + S3 heads | 1× 24–48 GB GPU (L4 / A10G / A100) | ~5–20 h per run, 3 seeds | |
 | S4 calibration | CPU | minutes | |
 | S5 AIMTAS task | free Kaggle 2× T4 | hours | |
@@ -239,7 +240,7 @@ GPU rental prices change; check current rates before each run.
 | Countries (§6.0) | every suite broken down per focus country and season | no country more than 5 points below the average |
 | Calibration | ECE after S4 | ≤ 0.10 |
 | Robustness | answer stability with options reordered; ordinal position bias | no first/last-position bias |
-| Speed | p50 / p95 per question: Edge on the gateway CPU, Cloud on a 2-vCPU Space | Edge p95 within the gateway's System 1 timeout with margin |
+| Speed | p50 / p95 per question: Edge on the gateway CPU, Skynet on the cloud server / a 2-vCPU Space | Edge p95 within the gateway's System 1 timeout with margin |
 
 ## 9. Safety, ethics and compliance
 
@@ -284,7 +285,7 @@ Weights and large datasets go to Hugging Face, never to git.
 | M2 | Corpora v1 | cleaned, deduplicated, licence-filtered DAPT text; token counts per domain, language and country |
 | M3 | DAPT Edge | lower MLM loss on domain hold-out text than the base; general loss not worse by more than a small margin |
 | M4 | Heads v1 (S2 + S3) on Edge | domain hold-outs: DAPT model beats the non-DAPT baseline |
-| M5 | DAPT + heads on Cloud | as M3–M4 for the 307 M variant |
+| M5 | DAPT + heads on Skynet | as M3–M4 for the 307 M model |
 | M6 | AIMTAS task (S5) | beats AIMTAS's current System 1 model on the AIMTAS hold-out |
 | M7 | Release | HF repos, model + data cards, ONNX, our server on a Space; AIMTAS switches by configuration after the owner's OK |
 
