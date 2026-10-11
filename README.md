@@ -1,7 +1,7 @@
 # Thannong-Agribiotech — System One SLM for agricultural biotechnology and medicine
 
 **Thannong-Agribiotech** (Thần Nông Agribiotech) is a planned **System One decision model**, a small language model (SLM)
-**compatible with TypeSafe's Jev**: it speaks the same System One API and answers the same typed questions, so a caller
+**compatible with [TypeSafe's Jev](https://docs.typesafe.ai/introduction)**: it speaks the same System One API and answers the same typed questions, so a caller
 built for Jev can use it unchanged. It is a fast *decision* model, not a chatbot. You give it a **state** (a sensor reading, an operator message, a lab note, a document passage) and
 **typed questions**; it returns typed answers with probabilities. It is built **from day 1** for **agricultural
 biotechnology** (aquaculture, livestock and poultry, crops and soil, animal health, feed, microbiology, biosecurity) and
@@ -43,7 +43,7 @@ the same AIMTAS hold-out tests.
 
 ## API
 
-**Jev-compatible:** our server speaks TypeSafe's **System One API**, `POST /v1/systemone`
+**[Jev](https://docs.typesafe.ai/introduction)-compatible:** our server speaks TypeSafe's **System One API**, `POST /v1/systemone`
 ([TypeSafe System One docs](https://docs.typesafe.ai/introduction)): the same request (`state` + typed `questions` of type
 `choice` / `score` / `noul`), the same typed answers with probabilities, so it is a drop-in alternative to Jev. AIMTAS's gateway and cloud already call that API, so
 they can switch to this model by configuration:
