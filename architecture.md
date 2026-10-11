@@ -5,7 +5,7 @@ experiments, not measurements.*
 
 ## 0. Summary
 
-Thannong-Agribiotech is a **System One decision model, compatible with TypeSafe's Jev**: a text encoder plus small
+Thannong-Agribiotech is a **System One decision model, compatible with [TypeSafe's Jev](https://docs.typesafe.ai/introduction)**: a text encoder plus small
 **decision heads** that answer typed questions with calibrated probabilities, behind the same System One API as Jev. It is built **from the bare `jhu-clsp/mmBERT` encoder**, with no part taken from
 any existing decision model (owner, 2026-10-11). Everything above the encoder is ours: the domain pretraining, the heads,
 the training method and the server.
@@ -32,7 +32,7 @@ the training method and the server.
 - Calibrated probabilities that callers can gate on, plus an **escalate** probability (hand the case to System 2 or a
   person).
 - Two sizes: **Edge** (runs on the AIMTAS gateway's CPU, ≤ ~150 M parameters) and **Cloud** (~300 M).
-- **Jev-compatible:** speak TypeSafe's System One API (`POST /v1/systemone`, [docs](https://docs.typesafe.ai/introduction))
+- **[Jev](https://docs.typesafe.ai/introduction)-compatible:** speak TypeSafe's System One API (`POST /v1/systemone`, [docs](https://docs.typesafe.ai/introduction))
   with the same request and answer shapes and question types (`choice`, `score`, `noul`) as Jev, so any Jev caller (the
   AIMTAS gateway and cloud among them) can switch to it by configuration.
 - Beat AIMTAS's current System 1 model on the AIMTAS farm hold-out before it replaces it there.
@@ -111,7 +111,7 @@ Notes:
 | Server v1 | Python **FastAPI + ONNX Runtime** in a small Docker image: `POST /v1/systemone` (TypeSafe request/response shape), `GET /v1/models`, `GET /health`; API key from an environment secret; per-question batching; a request limit per key |
 | Where it runs | a public **Hugging Face Space** (demo + API), the **AIMTAS cloud** cluster, and later **on the gateway itself** (Edge model, CPU), so System 1 keeps working while a farm is offline |
 | In-process option (later) | the AIMTAS gateway / cloud (Java) can load the same ONNX file with ONNX Runtime for Java, with no HTTP hop |
-| Compatibility tests | a **Jev-compatibility** contract suite: TypeSafe's documented request/response examples plus AIMTAS's real requests (question sets, typed answers, error codes) must pass against our server |
+| Compatibility tests | a **[Jev](https://docs.typesafe.ai/introduction)-compatibility** contract suite: TypeSafe's documented request/response examples plus AIMTAS's real requests (question sets, typed answers, error codes) must pass against our server |
 
 Model releases (planned, Hugging Face account `letrthang`), each a tagged revision (`v0.1`, …) so a server can pin or roll
 back:
