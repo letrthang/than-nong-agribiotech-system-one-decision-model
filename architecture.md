@@ -275,7 +275,7 @@ Weights and large datasets go to Hugging Face, never to git.
 
 | # | Milestone | Exit criteria |
 |---|---|---|
-| M0 | Licence, scope and data register | owner picks the licence and the first medical scope; `sources.yaml` with licences checked |
+| M0 | Scope and data register | licence decided: Apache-2.0 (2026-10-11); owner picks the first medical scope; `sources.yaml` with licences checked |
 | M1 | **Serving spike** | a tiny head on `mmBERT-small` answers on `/v1/systemone` (path 5a) — or the decision for 5b |
 | M2 | Corpora v1 | cleaned, deduplicated, licence-filtered DAPT text; token counts per domain and language |
 | M3 | DAPT Edge | lower MLM loss on domain hold-out text than the base, general loss not worse by more than a small margin |
