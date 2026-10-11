@@ -122,3 +122,13 @@ encoder mmBERT is MIT. Training data keeps its own licences; see the data card.
 ## Read next
 
 - [`architecture.md`](architecture.md) — the model, heads, data, training stages, server, evaluation, safety and milestones.
+
+---
+
+<p align="center">
+  <a href="https://lecompany.co"><img src="images/le_company_logo_text_size_10_40.jpg" alt="The LE Company" width="240"></a>
+</p>
+
+<p align="center">
+  <a href="https://lecompany.co"><b>The LE Company</b></a> is the sponsor of this project.
+</p>
