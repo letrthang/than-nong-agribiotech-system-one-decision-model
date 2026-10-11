@@ -1,6 +1,6 @@
 # Thannong-Agribiotech — architecture
 
-*Design, 2026-10-11. Nothing here is built yet. Numbers marked **(est.)** are planning estimates to check in the first
+*Ongoing — design first written 2026-10-11. Numbers marked **(est.)** are planning estimates to check in the first
 experiments, not measurements.*
 
 ## 0. Summary
