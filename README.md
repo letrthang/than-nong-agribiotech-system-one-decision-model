@@ -7,6 +7,12 @@ built for Jev can use it unchanged. It is a fast *decision* model, not a chatbot
 biotechnology** (aquaculture, livestock and poultry, crops and soil, animal health, feed, microbiology, biosecurity) and
 **medicine** (veterinary and human health, with a One Health view that links the two).
 
+**The target: our flagship System One model.** Trained and optimised from day 1 for agricultural biotechnology and
+medicine, it works the way TypeSafe's [Jev](https://docs.typesafe.ai/introduction) works (for example
+[`~typesafe/jev-latest` on OpenRouter](https://openrouter.ai/~typesafe/jev-latest)): a decision model behind a stable API
+that any System One caller can use. In AIMTAS it is the planned **replacement for the current System 1 model,
+[`aimtas-system-one-laya-slm`](https://github.com/letrthang/aimtas-system-one-laya-slm)**.
+
 > **Status (2026-10-11): design.** Nothing is trained yet. This repo holds the plan and, later, the training code and the
 > server. See [`architecture.md`](architecture.md) for the full design.
 
@@ -24,8 +30,13 @@ licence; reads 1,800+ languages), with **nothing taken from any existing decisio
   - **Thannong-Agribiotech-Skynet**: the bigger one, used by the **AIMTAS cloud server**.
 
 It is the long-term System One of the **AIMTAS** smart-farm platform, where a fast System 1 classifies, filters and gates,
-next to a large language model as System 2. It replaces AIMTAS's current System 1 model only where it scores better on
-the same AIMTAS hold-out tests.
+next to a large language model as System 2:
+
+- **Replaces `aimtas-system-one-laya-slm`** as AIMTAS's System 1 (Edge on the farm gateway, Skynet on the cloud server)
+  once it scores better on the same AIMTAS hold-out tests; the owner decides the switch.
+- **Hosted like Jev:** a public endpoint with keys and limits (a Hugging Face Space first), versioned releases, a model card
+  and published evaluation numbers. Listing it with model providers, as Jev is on OpenRouter, is a later step the owner
+  decides.
 
 ## What it does (and does not do)
 
