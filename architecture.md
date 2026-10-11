@@ -28,7 +28,7 @@ the training method and the server.
 
 **Goals**
 - Typed decisions (`choice`, `score`, `noul`) for agricultural biotechnology and medicine, in **English, Vietnamese and
-  Japanese** first, for the **ten focus countries** of §6.0 first.
+  Japanese** first, for the **eleven focus countries** of §6.0 first.
 - Calibrated probabilities that callers can gate on, plus an **escalate** probability (hand the case to System 2 or a
   person).
 - Two sizes: **Edge** (runs on the AIMTAS gateway's CPU, ≤ ~150 M parameters) and **Cloud** (~300 M).
@@ -125,7 +125,7 @@ back:
 
 ### 6.0 Focus countries and regional conditions (owner, 2026-10-11)
 
-The model is built first for **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland and Sweden**.
+The model is built first for **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden and Singapore**.
 Their conditions differ a lot, and a decision that is right in one can be wrong in another (a water temperature that is
 normal for a Vietnamese shrimp pond is lethal for Norwegian salmon), so **place is part of the data**:
 
@@ -141,6 +141,7 @@ normal for a Vietnamese shrimp pond is lethal for Norwegian salmon), so **place 
 | Norway | cool maritime to subarctic | Atlantic salmon and trout (sea pens, RAS), dairy |
 | Finland | boreal, long cold winters | dairy, pigs, poultry, rainbow trout (RAS) |
 | Sweden | temperate to boreal | dairy, pigs, poultry, RAS fish farming |
+| Singapore | tropical equatorial, hot and humid all year; very little land | high-tech urban farming: indoor and vertical vegetable farms, recirculating (RAS) and coastal fish farms, egg layers |
 
 What this means for each stage:
 
@@ -172,6 +173,7 @@ universities). Licences differ; **check each before use** (US federal works are 
 | Norway | Norwegian Veterinary Institute, Norwegian Food Safety Authority, Institute of Marine Research |
 | Finland | Natural Resources Institute Finland (Luke), the Finnish Food Authority |
 | Sweden | Swedish University of Agricultural Sciences (SLU), the Swedish Board of Agriculture |
+| Singapore | Singapore Food Agency (SFA), the Animal & Veterinary Service (AVS) |
 
 ### 6.1 Text for DAPT (S1)
 
@@ -186,7 +188,7 @@ allow (aim ≥ 20 % each), the rest English; a minimum share per focus country (
 | FAO publications, AGROVOC thesaurus | agriculture, aquaculture, livestock | often CC BY-NC-SA IGO — **non-commercial terms may rule them out** |
 | Open-access agriculture / aquaculture / veterinary journals | agri-biotech | per journal (CC BY preferred) |
 | Wikipedia (en / vi / ja, plus ko / no / fi / sv) — science, agriculture, medicine categories | all | CC BY-SA |
-| Government extension and veterinary guidance of the ten focus countries (§6.0) | agriculture, aquaculture, veterinary | per government; often reusable — verify |
+| Government extension and veterinary guidance of the eleven focus countries (§6.0) | agriculture, aquaculture, veterinary | per government; often reusable — verify |
 | **AIMTAS own data**: SOPs, Training Profiles, simulator scenarios, anonymised logs (owner-approved) | farm operations | ours |
 
 **Excluded:** patient records or any personal health data (e.g. MIMIC-type datasets), anything without a licence that

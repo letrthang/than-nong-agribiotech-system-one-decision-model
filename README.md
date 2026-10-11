@@ -35,7 +35,7 @@ the same AIMTAS hold-out tests.
 ## Focus: languages and countries (owner, 2026-10-11)
 
 - **Languages first:** English, Vietnamese, Japanese.
-- **Countries first:** **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden.** Farming
+- **Countries first:** **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden, Singapore.** Farming
   depends on place: climate and weather, soil, water, species and breeds, diseases, and each country's rules. So the
   training data, the domain knowledge and the tests are collected and reported **per country**. Every training example
   carries its country and climate zone, and a model is judged on each country, not only on the average.
