@@ -13,7 +13,7 @@
   <a href="LICENSE"><img alt="Licence: Apache-2.0" src="https://img.shields.io/badge/licence-Apache--2.0-blue"></a>
   <img alt="Status: ongoing" src="https://img.shields.io/badge/status-ongoing-orange">
   <a href="https://docs.typesafe.ai/introduction"><img alt="API: Jev-compatible System One" src="https://img.shields.io/badge/API-Jev--compatible%20%2Fv1%2Fsystemone-6f42c1"></a>
-  <img alt="Languages: English, Vietnamese, Japanese" src="https://img.shields.io/badge/languages-en%20%C2%B7%20vi%20%C2%B7%20ja-2ea44f">
+  <img alt="Languages: English, Vietnamese, Japanese, Korean, Chinese" src="https://img.shields.io/badge/languages-en%20%C2%B7%20vi%20%C2%B7%20ja%20%C2%B7%20ko%20%C2%B7%20zh-2ea44f">
   <a href="https://huggingface.co/jhu-clsp/mmBERT-base"><img alt="Base encoder: mmBERT" src="https://img.shields.io/badge/base-mmBERT-yellow"></a>
 </p>
 
@@ -76,8 +76,8 @@ next to a large language model as System 2:
 
 ## Focus: languages and countries
 
-- **Languages first:** English, Vietnamese, Japanese.
-- **Countries first:** **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden, Singapore.** Farming
+- **Five focus languages:** English, Vietnamese, Japanese, Korean and Chinese.
+- **Countries first:** **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden, Singapore, China.** Farming
   depends on place: climate and weather, soil, water, species and breeds, diseases, and each country's rules. So the
   training data, the domain knowledge and the tests are collected and reported **per country**. Every training example
   carries its country and climate zone, and a model is judged on each country, not only on the average.

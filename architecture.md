@@ -34,8 +34,8 @@ planned **replacement for the current System 1 model, [`aimtas-system-one-laya-s
 once it wins on the AIMTAS hold-out tests (§8, M6).
 
 **Goals**
-- Typed decisions (`choice`, `score`, `noul`) for agricultural biotechnology and medicine, in **English, Vietnamese and
-  Japanese** first, for the **eleven focus countries** of §6.0 first.
+- Typed decisions (`choice`, `score`, `noul`) for agricultural biotechnology and medicine, in the **five focus languages** (English, Vietnamese,
+  Japanese, Korean and Chinese), for the **twelve focus countries** of §6.0 first.
 - Calibrated probabilities that callers can gate on, plus an **escalate** probability (hand the case to System 2 or a
   person).
 - Two models: **Edge** (the AIMTAS gateway on the farm, on its CPU, ≤ ~150 M parameters) and **Skynet** (the AIMTAS cloud
@@ -59,7 +59,7 @@ once it wins on the AIMTAS hold-out tests (§8, M6).
 
 `jhu-clsp/mmBERT` (Johns Hopkins University, 2025; paper arXiv:2509.06888; MIT licence) is a multilingual **ModernBERT**
 encoder: bidirectional, masked-language-model pretrained on 3T+ tokens in 1,800+ languages (public training data),
-8,192-token context, 256k-token vocabulary. It reads Vietnamese, Japanese, Korean, Norwegian, Finnish and Swedish as well
+8,192-token context, 256k-token vocabulary. It reads Vietnamese, Japanese, Korean, Chinese, Norwegian, Finnish and Swedish as well
 as English. It outputs one vector per token and has no task head; that is what we add.
 
 | Variant | Start from | Params | Layers / hidden | Use |
@@ -137,7 +137,7 @@ back:
 
 ### 6.0 Focus countries and regional conditions
 
-The model is built first for **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden and Singapore**.
+The model is built first for **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden, Singapore and China**.
 Their conditions differ a lot, and a decision that is right in one can be wrong in another (a water temperature that is
 normal for a Vietnamese shrimp pond is lethal for Norwegian salmon), so **place is part of the data**:
 
@@ -153,6 +153,7 @@ normal for a Vietnamese shrimp pond is lethal for Norwegian salmon), so **place 
 | Norway | cool maritime to subarctic | Atlantic salmon and trout (sea pens, RAS), dairy |
 | Finland | boreal, long cold winters | dairy, pigs, poultry, rainbow trout (RAS) |
 | Sweden | temperate to boreal | dairy, pigs, poultry, RAS fish farming |
+| China | very varied: cold temperate north and northeast, continental and arid west, subtropical and tropical monsoon south | pigs and poultry at large scale, carp and other freshwater fish, shrimp, rice–fish and rice–crayfish, dairy, greenhouses |
 | Singapore | tropical equatorial, hot and humid all year; very little land | high-tech urban farming: indoor and vertical vegetable farms, recirculating (RAS) and coastal fish farms, egg layers |
 
 What this means for each stage:
@@ -166,9 +167,9 @@ What this means for each stage:
   water discharge, animal welfare), labels follow that country's rules; the question says which country.
 - **Balance and reporting:** a minimum share of S1 text and S3 decision data per country; every evaluation is reported
   **per country** (and per language and domain); a model that is much weaker for one country does not ship.
-- **Languages:** decisions are asked and answered in English, Vietnamese and Japanese first. Sources in Korean, Norwegian,
-  Finnish and Swedish can still be used as DAPT text (mmBERT reads all of them), and their key facts can be brought into
-  the decision data in English with review; Korean as a question language can follow later.
+- **Languages:** decisions are asked and answered in **English, Vietnamese, Japanese, Korean and Chinese** first. Sources
+  in Norwegian, Finnish and Swedish can still be used as DAPT text (mmBERT reads them), and their key facts can be brought
+  into the decision data in English with review.
 
 Country sources to check first (national agriculture, fisheries, food-safety and veterinary bodies, research institutes and
 universities). Licences differ; **check each before use** (US federal works are usually public domain; others vary):
@@ -185,13 +186,14 @@ universities). Licences differ; **check each before use** (US federal works are 
 | Norway | Norwegian Veterinary Institute, Norwegian Food Safety Authority, Institute of Marine Research |
 | Finland | Natural Resources Institute Finland (Luke), the Finnish Food Authority |
 | Sweden | Swedish University of Agricultural Sciences (SLU), the Swedish Board of Agriculture |
+| China | Ministry of Agriculture and Rural Affairs (MARA), Chinese Academy of Agricultural Sciences (CAAS), Chinese Academy of Fishery Sciences — also check China's rules on data export and reuse |
 | Singapore | Singapore Food Agency (SFA), the Animal & Veterinary Service (AVS) |
 
 ### 6.1 Text for DAPT (S1)
 
 Target mixture **(est.)** for 5–20 billion tokens: agricultural biotechnology 35 % · medicine (veterinary first, then human)
-25 % · AIMTAS documents 5–10 % · general replay 30 %. Within the domain text: as much Vietnamese and Japanese as licences
-allow (aim ≥ 20 % each), the rest English; a minimum share per focus country (§6.0).
+25 % · AIMTAS documents 5–10 % · general replay 30 %. Within the domain text: as much Vietnamese, Japanese, Korean and Chinese as licences
+allow (aim ≥ 12 % each, so about half of the domain text is not English), the rest English; a minimum share per focus country (§6.0).
 
 | Source (candidates) | Domain | Licence — **check before use** |
 |---|---|---|
@@ -199,8 +201,8 @@ allow (aim ≥ 20 % each), the rest English; a minimum share per focus country (
 | PubMed Central **Open Access** subset, commercial-use portion | medical, biotech | per-article licence (CC BY, CC0 …); use only commercial-use-compatible articles |
 | FAO publications, AGROVOC thesaurus | agriculture, aquaculture, livestock | often CC BY-NC-SA IGO — **non-commercial terms may rule them out** |
 | Open-access agriculture / aquaculture / veterinary journals | agri-biotech | per journal (CC BY preferred) |
-| Wikipedia (en / vi / ja, plus ko / no / fi / sv) — science, agriculture, medicine categories | all | CC BY-SA |
-| Government extension and veterinary guidance of the eleven focus countries (§6.0) | agriculture, aquaculture, veterinary | per government; often reusable — verify |
+| Wikipedia (en / vi / ja / ko / zh, plus no / fi / sv) — science, agriculture, medicine categories | all | CC BY-SA |
+| Government extension and veterinary guidance of the twelve focus countries (§6.0) | agriculture, aquaculture, veterinary | per government; often reusable — verify |
 | **AIMTAS own data**: SOPs, Training Profiles, simulator scenarios, anonymised logs (owner-approved) | farm operations | ours |
 
 **Excluded:** patient records or any personal health data (e.g. MIMIC-type datasets), anything without a licence that
@@ -247,7 +249,7 @@ GPU rental prices change; check current rates before each run.
 | General typed decisions (public sets of §6.2) | accuracy, ECE | at least as good as the bare-encoder baseline trained on S2 only |
 | Domain decision hold-outs (§6.2), per domain | accuracy, macro-F1, ECE | DAPT model beats the same heads on the non-DAPT encoder |
 | **AIMTAS farm hold-out** (AIMTAS's shared eval set and question contract) | per question, per farm type (fish / prawn / chicken / pig / mixed), per language | **beats AIMTAS's current System 1 model**; urgency recall ≥ 0.95 |
-| Languages | en / vi / ja | vi and ja ≤ 5 points below en |
+| Languages | en / vi / ja / ko / zh | each of vi, ja, ko and zh ≤ 5 points below en |
 | Countries (§6.0) | every suite broken down per focus country and season | no country more than 5 points below the average |
 | Calibration | ECE after S4 | ≤ 0.10 |
 | Robustness | answer stability with options reordered; ordinal position bias | no first/last-position bias |
@@ -317,7 +319,7 @@ Weights and large datasets go to Hugging Face, never to git.
 | Our own server is more to maintain | small FastAPI service, contract tests, one Docker image for Space, cluster and gateway |
 | Licences of agriculture/medical text block commercial use | licence register from M0; prefer CC BY / CC0 / public-domain sources; exclude NC sources |
 | Domain shift forgets general skills | 20–30 % replay in S1 and S3; general eval in every report |
-| Too little Vietnamese / Japanese domain text | translate selected English passages with review; collect VN / JP extension material; report per language |
+| Too little Vietnamese / Japanese / Korean / Chinese domain text | translate selected English passages with review; collect VN / JP / KR / CN extension material; report per language |
 | Data dominated by one or two countries (e.g. USA in English text) | minimum share per focus country; per-country reports; place in every `state` |
 | Wrong thresholds across places (climate, season, species) | bands per country / species / season from local guidance or Training Profiles; never one global table |
 | Medical misuse | advice-only design, model card limits, human-health scope gated by the owner |
