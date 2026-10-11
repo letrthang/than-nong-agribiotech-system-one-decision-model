@@ -1,4 +1,33 @@
-# Thannong-Agribiotech — System One SLM for agricultural biotechnology and medicine
+<p align="center">
+  <img src="images/than_nong_ai_logo.webp" alt="Thần Nông AI logo" width="420">
+</p>
+
+<h1 align="center">Thannong-Agribiotech</h1>
+
+<p align="center">
+  <b>The System One decision model for agricultural biotechnology and medicine</b><br>
+  <i>Fast, typed decisions with calibrated probabilities. Jev-compatible. Built from day 1 for farms, animal health and medicine.</i>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="Licence: Apache-2.0" src="https://img.shields.io/badge/licence-Apache--2.0-blue"></a>
+  <img alt="Status: design" src="https://img.shields.io/badge/status-design-orange">
+  <a href="https://docs.typesafe.ai/introduction"><img alt="API: Jev-compatible System One" src="https://img.shields.io/badge/API-Jev--compatible%20%2Fv1%2Fsystemone-6f42c1"></a>
+  <img alt="Languages: English, Vietnamese, Japanese" src="https://img.shields.io/badge/languages-en%20%C2%B7%20vi%20%C2%B7%20ja-2ea44f">
+  <a href="https://huggingface.co/jhu-clsp/mmBERT-base"><img alt="Base encoder: mmBERT" src="https://img.shields.io/badge/base-mmBERT-yellow"></a>
+</p>
+
+<p align="center">
+  <a href="#what-makes-it-ours">What makes it ours</a> ·
+  <a href="#what-it-does-and-does-not-do">What it does</a> ·
+  <a href="#focus-languages-and-countries">Focus</a> ·
+  <a href="#api">API</a> ·
+  <a href="#where-things-will-live">Models</a> ·
+  <a href="architecture.md">Architecture</a>
+</p>
+
+---
+
 
 **Thannong-Agribiotech** (Thần Nông Agribiotech) is a planned **System One decision model**, a small language model (SLM)
 **compatible with [TypeSafe's Jev](https://docs.typesafe.ai/introduction)**: it speaks the same System One API and answers the same typed questions, so a caller
