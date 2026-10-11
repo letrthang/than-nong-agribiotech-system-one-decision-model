@@ -1,0 +1,6 @@
+# Only the Dockerfile, entrypoint.sh, the landing page and the nginx template go into the build context.
+*
+!Dockerfile
+!entrypoint.sh
+!public/
+!nginx/
