@@ -63,7 +63,7 @@ curl -s https://<server>/v1/systemone -H "Authorization: Bearer <API_KEY>" -H "C
 | What | Where |
 |---|---|
 | Plan, training code, eval sets, server code | this repo (public) |
-| Trained weights (safetensors) | Hugging Face `letrthang/thannong-agribiotech` and `letrthang/thannong-agribiotech-edge` (planned) |
+| Trained weights (safetensors) | Hugging Face `letrthang/thannong-agribiotech-skynet` and `letrthang/thannong-agribiotech-edge` (planned) |
 | CPU inference export (ONNX, int8) | the same Hugging Face repos, `onnx/` folder (planned) |
 | Live server | our own `/v1/systemone` server image: a Hugging Face Space for the public, the AIMTAS cluster and gateway for the farms |
 

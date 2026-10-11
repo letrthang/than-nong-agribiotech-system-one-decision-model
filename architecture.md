@@ -118,7 +118,7 @@ back:
 
 | Repo | Contents |
 |---|---|
-| `letrthang/thannong-agribiotech` | safetensors checkpoint, tokenizer, temperatures, `onnx/` (int8), model card, data card |
+| `letrthang/thannong-agribiotech-skynet` | safetensors checkpoint, tokenizer, temperatures, `onnx/` (int8), model card, data card |
 | `letrthang/thannong-agribiotech-edge` | the Edge variant, same layout |
 
 ## 6. Data
