@@ -19,7 +19,9 @@ licence; reads 1,800+ languages), with **nothing taken from any existing decisio
   before any task training, so it reads terms like *Vibrio parahaemolyticus*, *coccidiosis*, *dissolved oxygen sag* or
   *biofloc* as familiar words.
 - **Our own decision heads, our own training, our own server**, designed, trained and released by us.
-- **Two sizes:** a small **Edge** model for the farm gateway's CPU and a larger **Cloud** model.
+- **Two models:**
+  - **Thannong-Agribiotech-Edge**: the small one, used by the **AIMTAS gateway on the farm** (runs on its CPU, also offline);
+  - **Thannong-Agribiotech-Skynet**: the bigger one, used by the **AIMTAS cloud server**.
 
 It is the long-term System One of the **AIMTAS** smart-farm platform, where a fast System 1 classifies, filters and gates,
 next to a large language model as System 2. It replaces AIMTAS's current System 1 model only where it scores better on
@@ -63,7 +65,8 @@ curl -s https://<server>/v1/systemone -H "Authorization: Bearer <API_KEY>" -H "C
 | What | Where |
 |---|---|
 | Plan, training code, eval sets, server code | this repo (public) |
-| Trained weights (safetensors) | Hugging Face `letrthang/thannong-agribiotech-skynet` and `letrthang/thannong-agribiotech-edge` (planned) |
+| Edge model (farm gateway) | Hugging Face `letrthang/thannong-agribiotech-edge` (planned) |
+| Skynet model (cloud server, bigger) | Hugging Face `letrthang/thannong-agribiotech-skynet` (planned) |
 | CPU inference export (ONNX, int8) | the same Hugging Face repos, `onnx/` folder (planned) |
 | Live server | our own `/v1/systemone` server image: a Hugging Face Space for the public, the AIMTAS cluster and gateway for the farms |
 
