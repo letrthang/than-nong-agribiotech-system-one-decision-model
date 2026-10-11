@@ -34,6 +34,15 @@ Option A ships first. Option B replaces it only where it **beats Option A on the
 
 - **Does:** typed decisions — `choice` (pick one of the options), `score` (an ordinal level), `noul` (yes/no with a
   probability); calibrated probabilities; English, Vietnamese and Japanese first, other languages from the multilingual base.
+
+## Focus: languages and countries (owner, 2026-10-11)
+
+- **Languages first:** English, Vietnamese, Japanese.
+- **Countries first:** **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden.** Farming
+  depends on place — climate and weather, soil, water, species and breeds, diseases, and each country's rules — so the
+  training data, the domain knowledge and the tests are collected and reported **per country**. Every training example
+  carries its country and climate zone, and a model is judged on each country, not only on the average.
+  See [`architecture.md`](architecture.md) §6.0.
 - **Does not:** write text, diagnose, prescribe, or act. It is **advice for deterministic callers**: AIMTAS keeps interlocks,
   limits and modes in code; in medicine, a qualified person decides. It is **not a medical device**.
 
