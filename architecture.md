@@ -123,7 +123,7 @@ back:
 
 ## 6. Data
 
-### 6.0 Focus countries and regional conditions (owner, 2026-10-11)
+### 6.0 Focus countries and regional conditions
 
 The model is built first for **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden and Singapore**.
 Their conditions differ a lot, and a decision that is right in one can be wrong in another (a water temperature that is

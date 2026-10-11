@@ -32,7 +32,7 @@ the same AIMTAS hold-out tests.
 - **Does not:** write text, diagnose, prescribe, or act. It is **advice for deterministic callers**: AIMTAS keeps interlocks,
   limits and modes in code; in medicine, a qualified person decides. It is **not a medical device**.
 
-## Focus: languages and countries (owner, 2026-10-11)
+## Focus: languages and countries
 
 - **Languages first:** English, Vietnamese, Japanese.
 - **Countries first:** **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland, Sweden, Singapore.** Farming
