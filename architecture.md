@@ -27,7 +27,7 @@ It serves the same `POST /v1/systemone` API as Laya, so AIMTAS callers can switc
 
 **Goals**
 - Typed decisions (`choice`, `score`, `noul`) for agricultural biotechnology and medicine, in **English, Vietnamese and
-  Japanese** first.
+  Japanese** first, for the **ten focus countries** of §6.0 first.
 - Calibrated probabilities that callers can gate on (AIMTAS's System 1 confidence gate, escalation to System 2).
 - Two sizes: **Edge** (runs on the AIMTAS gateway's CPU, ≤ ~150 M parameters) and **Cloud** (~300 M).
 - Drop-in for Laya on `POST /v1/systemone` (Jev-compatible, [TypeSafe docs](https://docs.typesafe.ai/introduction)).
@@ -123,6 +123,56 @@ Each release is a tagged revision (`v0.1`, …) so a server can pin or roll back
 
 ## 6. Data
 
+### 6.0 Focus countries and regional conditions (owner, 2026-10-11)
+
+The model is built first for **Vietnam, USA, Canada, Australia, New Zealand, Japan, Korea, Norway, Finland and Sweden**.
+Their conditions differ a lot, and a decision that is right in one can be wrong in another (a water temperature that is
+normal for a Vietnamese shrimp pond is lethal for Norwegian salmon), so **place is part of the data**:
+
+| Country | Climate (broadly) | Farming examples to cover (to confirm with domain experts) |
+|---|---|---|
+| Vietnam | tropical monsoon (north: humid subtropical) | shrimp and prawn, pangasius, tilapia, pigs, poultry, rice-fish |
+| USA | temperate to subtropical, arid west | poultry, pigs, cattle, catfish and trout, row crops |
+| Canada | cold temperate / continental | dairy, pigs, poultry, salmon (coastal), greenhouses |
+| Australia | arid to tropical; drought and heat | sheep and cattle, poultry, prawns, barramundi |
+| New Zealand | temperate maritime | dairy and sheep, green-lipped mussels, king salmon |
+| Japan | humid subtropical to cool temperate; typhoons | poultry, pigs, wagyu, yellowtail and sea bream, oysters |
+| Korea | humid continental, monsoon summers | pigs, poultry, flatfish (olive flounder), seaweed, greenhouses |
+| Norway | cool maritime to subarctic | Atlantic salmon and trout (sea pens, RAS), dairy |
+| Finland | boreal, long cold winters | dairy, pigs, poultry, rainbow trout (RAS) |
+| Sweden | temperate to boreal | dairy, pigs, poultry, RAS fish farming |
+
+What this means for each stage:
+
+- **Every example carries its context:** country, climate zone, season (the hemisphere matters: Australia and New
+  Zealand have winter in June–August), farm type, species or crop, and the units in use (°C / °F, mg/L, ppm). The state
+  renderer writes these into the `state` text, so the same question can have different right answers by place.
+- **Bands and thresholds come from the place:** normal ranges for water, air, soil and animal health are taken per
+  country, species and season from that country's guidance (or AIMTAS Training Profiles), never one global table.
+- **Regulation-aware labels:** where a decision depends on national rules (notifiable diseases, withdrawal periods,
+  water discharge, animal welfare), labels follow that country's rules; the question says which country.
+- **Balance and reporting:** a minimum share of S1 text and S3 decision data per country; every evaluation is reported
+  **per country** (and per language and domain); a model that is much weaker for one country does not ship.
+- **Languages:** decisions are asked and answered in English, Vietnamese and Japanese first. Sources in Korean, Norwegian,
+  Finnish and Swedish can still be used as DAPT text (mmBERT reads all of them), and their key facts can be brought into
+  the decision data in English with review; Korean as a question language can follow later.
+
+Country sources to check first (national agriculture, fisheries, food-safety and veterinary bodies, research institutes and
+universities). Licences differ; **check each before use** (US federal works are usually public domain; others vary):
+
+| Country | Examples of official / research sources |
+|---|---|
+| Vietnam | the national ministry for agriculture and its research institutes; veterinary and fisheries departments |
+| USA | USDA (incl. ARS, APHIS), NOAA Fisheries, FDA Center for Veterinary Medicine, land-grant university extension |
+| Canada | Agriculture and Agri-Food Canada, Canadian Food Inspection Agency, Fisheries and Oceans Canada |
+| Australia | CSIRO, the federal department of agriculture, state primary-industries departments |
+| New Zealand | Ministry for Primary Industries, AgResearch / Crown research institutes |
+| Japan | MAFF, NARO, the Fisheries Research and Education Agency |
+| Korea | MAFRA, the Rural Development Administration, the National Institute of Fisheries Science |
+| Norway | Norwegian Veterinary Institute, Norwegian Food Safety Authority, Institute of Marine Research |
+| Finland | Natural Resources Institute Finland (Luke), the Finnish Food Authority |
+| Sweden | Swedish University of Agricultural Sciences (SLU), the Swedish Board of Agriculture |
+
 ### 6.1 Text for DAPT (S1)
 
 Target mixture **(est.)** for 5–20 billion tokens: agricultural biotechnology 35 % · medicine (veterinary first, then human)
@@ -136,7 +186,7 @@ allow (aim ≥ 20 % each), the rest English.
 | FAO publications, AGROVOC thesaurus | agriculture, aquaculture, livestock | often CC BY-NC-SA IGO — **non-commercial terms may rule them out** |
 | Open-access agriculture / aquaculture / veterinary journals | agri-biotech | per journal (CC BY preferred) |
 | Wikipedia (en / vi / ja) — science, agriculture, medicine categories | all | CC BY-SA |
-| Government extension and veterinary guidance (VN, JP …) | agriculture, veterinary | per government; often reusable — verify |
+| Government extension and veterinary guidance of the ten focus countries (§6.0) | agriculture, aquaculture, veterinary | per government; often reusable — verify |
 | **AIMTAS own data**: SOPs, Training Profiles, simulator scenarios, anonymised logs (owner-approved) | farm operations | ours |
 
 **Excluded:** patient records or any personal health data (e.g. MIMIC-type datasets), anything without a licence that
@@ -184,6 +234,7 @@ GPU rental prices change; check current rates before each run.
 | Domain decision hold-outs (§6.2), per domain | accuracy, macro-F1, ECE | beats Laya-multilingual + Option A on each domain |
 | **AIMTAS farm hold-out** (Option A's `test-holdout.jsonl`, `farm-v1.json`) | per question, per farm type (fish / prawn / chicken / pig / mixed), per language | **beats Option A**; urgency recall ≥ 0.95 |
 | Languages | en / vi / ja | vi and ja ≤ 5 points below en |
+| Countries (§6.0) | every suite broken down per focus country and season | no country more than 5 points below the average |
 | Calibration | ECE after S4 | ≤ 0.10 |
 | Robustness | answer stability with options reordered; position bias on `score` | no first/last-position bias |
 | Speed | p50 / p95 per question: Edge on the gateway CPU, Cloud on a 2-vCPU Space | Edge p95 ≤ Laya's on the same CPU |
@@ -250,5 +301,7 @@ Weights and large datasets go to Hugging Face, never to git.
 | Licences of agriculture/medical text block commercial use | licence register from M0; prefer CC BY / CC0 / public-domain sources; exclude NC sources if the model is commercial |
 | Domain shift forgets general skills | 20–30 % replay in S1 and S3; general eval in every report |
 | Too little Vietnamese / Japanese domain text | translate selected English passages with review; collect VN / JP extension material; report per language |
+| Data dominated by one or two countries (e.g. USA in English text) | minimum share per focus country; per-country reports; place in every `state` |
+| Wrong thresholds across places (climate, season, species) | bands per country / species / season from local guidance or Training Profiles; never one global table |
 | Medical misuse | advice-only design, model card limits, human-health scope gated by the owner |
 | Cost overrun in DAPT | start with Edge (small), measure the gain per billion tokens before scaling |
