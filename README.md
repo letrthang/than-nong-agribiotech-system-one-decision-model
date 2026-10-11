@@ -73,11 +73,14 @@ curl -s https://<server>/v1/systemone -H "Authorization: Bearer <API_KEY>" -H "C
 
 ## Open decisions (owner)
 
-1. **Licence** of this repo and of the model (Apache-2.0 recommended — it matches Laya and allows commercial use; the
-   repo has no `LICENSE` yet).
-2. **Which medical scope** comes first: veterinary (closest to AIMTAS) or human health too.
-3. **Head layout:** Laya-compatible (servable by today's llama.cpp) or our own design (needs our own server) —
+1. **Which medical scope** comes first: veterinary (closest to AIMTAS) or human health too.
+2. **Head layout:** Laya-compatible (servable by today's llama.cpp) or our own design (needs our own server) —
    [`architecture.md`](architecture.md) §5.
+
+## Licence
+
+**Apache-2.0** (owner, 2026-10-11) — this repository ([`LICENSE`](LICENSE)) and the released model weights, the same as
+Laya. Training data keeps its own licences; see the data card.
 
 ## Read next
 
