@@ -122,6 +122,7 @@ encoder mmBERT is MIT. Training data keeps its own licences; see the data card.
 ## Read next
 
 - [`architecture.md`](architecture.md) — the model, heads, data, training stages, server, evaluation, safety and milestones.
+- [`GITHUB_COMMIT_RULE.md`](GITHUB_COMMIT_RULE.md) — how to contribute: git flow `develop` → `main` → `release`, PRs, releases, what must never be committed.
 
 ---
 
