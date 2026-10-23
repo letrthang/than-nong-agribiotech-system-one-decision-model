@@ -30,7 +30,7 @@ the training method and the server.
 agricultural biotechnology and medicine, and working the way TypeSafe's [Jev](https://docs.typesafe.ai/introduction) works
 (for example [`~typesafe/jev-latest` on OpenRouter](https://openrouter.ai/~typesafe/jev-latest)): a decision model that
 answers typed questions with probabilities, behind a stable API, that any System One caller can use. In AIMTAS it is the
-planned **replacement for the current System 1 model, [`aimtas-system-one-laya-slm`](https://github.com/letrthang/aimtas-system-one-laya-slm)**,
+planned **replacement for the current System 1 model, [`aimtas-system-one-decision-model-laya`](https://github.com/letrthang/aimtas-system-one-decision-model-laya)**,
 once it wins on the AIMTAS hold-out tests (§8, M6).
 
 **Goals**
@@ -43,7 +43,7 @@ once it wins on the AIMTAS hold-out tests (§8, M6).
 - **[Jev](https://docs.typesafe.ai/introduction)-compatible:** speak TypeSafe's System One API (`POST /v1/systemone`, [docs](https://docs.typesafe.ai/introduction))
   with the same request and answer shapes and question types (`choice`, `score`, `noul`) as Jev, so any Jev caller (the
   AIMTAS gateway and cloud among them) can switch to it by configuration.
-- **Replace `aimtas-system-one-laya-slm` as AIMTAS's System 1:** Edge on the farm gateway, Skynet on the cloud server, after
+- **Replace `aimtas-system-one-decision-model-laya` as AIMTAS's System 1:** Edge on the farm gateway, Skynet on the cloud server, after
   it beats that model on the AIMTAS farm hold-out (the owner decides the switch).
 - **A flagship, hosted like Jev:** a public endpoint with keys and limits (Hugging Face Space first), versioned releases,
   a model card and published evaluation numbers; listing it with model providers (as Jev is on OpenRouter) is a later step
