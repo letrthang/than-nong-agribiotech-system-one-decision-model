@@ -7,6 +7,12 @@ for the first released model. Branches: `develop` (daily work) → `main` (check
 
 ## [Unreleased]
 
+### Changed
+- **Named as a decision model.** The repository is now `than-nong-agribiotech-system-one-decision-model` (was
+  `than-nong-agribiotech-system-one-slm`; GitHub redirects the old URL), the README calls the model a System One decision
+  model rather than a small language model, and links point to the renamed Laya repo
+  `aimtas-system-one-decision-model-laya`.
+
 ## [0.1.0] — 2026-10-17
 
 The first release: the plan and architecture of a Jev-compatible System One decision model for agricultural biotechnology
@@ -25,5 +31,5 @@ and medicine. No model is trained yet.
 - **`GITHUB_COMMIT_RULE.md`** — the git flow guide and what must never be committed in this public repo.
 - **Licence** — Apache-2.0 for this repository and the released model weights.
 
-[Unreleased]: https://github.com/letrthang/than-nong-agribiotech-system-one-slm/compare/v0.1.0...develop
-[0.1.0]: https://github.com/letrthang/than-nong-agribiotech-system-one-slm/releases/tag/v0.1.0
+[Unreleased]: https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/compare/v0.1.0...develop
+[0.1.0]: https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/releases/tag/v0.1.0

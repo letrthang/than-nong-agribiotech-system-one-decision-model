@@ -29,7 +29,7 @@
 ---
 
 
-**Thannong-Agribiotech** (Thần Nông Agribiotech) is a planned **System One decision model**, a small language model (SLM)
+**Thannong-Agribiotech** (Thần Nông Agribiotech) is a planned **System One decision model**,
 **compatible with [TypeSafe's Jev](https://docs.typesafe.ai/introduction)**: it speaks the same System One API and answers the same typed questions, so a caller
 built for Jev can use it unchanged. It is a fast *decision* model, not a chatbot. You give it a **state** (a sensor reading, an operator message, a lab note, a document passage) and
 **typed questions**; it returns typed answers with probabilities. It is built **from day 1** for **agricultural
@@ -40,7 +40,7 @@ biotechnology** (aquaculture, livestock and poultry, crops and soil, animal heal
 medicine, it works the way TypeSafe's [Jev](https://docs.typesafe.ai/introduction) works (for example
 [`~typesafe/jev-latest` on OpenRouter](https://openrouter.ai/~typesafe/jev-latest)): a decision model behind a stable API
 that any System One caller can use. In AIMTAS it is the planned **replacement for the current System 1 model,
-[`aimtas-system-one-laya-slm`](https://github.com/letrthang/aimtas-system-one-laya-slm)**.
+[`aimtas-system-one-decision-model-laya`](https://github.com/letrthang/aimtas-system-one-decision-model-laya)**.
 
 > **Status: ongoing.** Design and data preparation are in progress; training and the server follow, step by step, in this
 > repo. See [`architecture.md`](architecture.md) for the full design.
@@ -61,7 +61,7 @@ licence; reads 1,800+ languages), with **nothing taken from any existing decisio
 It is the long-term System One of the **AIMTAS** smart-farm platform, where a fast System 1 classifies, filters and gates,
 next to a large language model as System 2:
 
-- **Replaces `aimtas-system-one-laya-slm`** as AIMTAS's System 1 (Edge on the farm gateway, Skynet on the cloud server)
+- **Replaces `aimtas-system-one-decision-model-laya`** as AIMTAS's System 1 (Edge on the farm gateway, Skynet on the cloud server)
   once it scores better on the same AIMTAS hold-out tests; the owner decides the switch.
 - **Hosted like Jev:** a public endpoint with keys and limits (a Hugging Face Space first), versioned releases, a model card
   and published evaluation numbers. Listing it with model providers, as Jev is on OpenRouter, is a later step the owner

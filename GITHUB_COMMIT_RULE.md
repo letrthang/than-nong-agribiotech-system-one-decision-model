@@ -120,7 +120,7 @@ git commit -m "..."
 
 ## Issues
 
-All issues for this project go in **this repo**: <https://github.com/letrthang/than-nong-agribiotech-system-one-slm/issues>.
+All issues for this project go in **this repo**: <https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/issues>.
 Title format `[<type>] <short description>` — `[bug]`, `[feat]`, `[docs]`, `[refactor]`, `[release]`,
 `[need-admin-approve]`. Apply a label (`bug`, `enhancement`, `documentation`). Issues are public too: never put a secret or
 personal data in one.
