@@ -104,7 +104,7 @@ jobs:
           # The REST API puts `body` in front of the notes it generates from the merged PRs/commits.
           gh api "repos/${GITHUB_REPOSITORY}/releases" \
             -f tag_name="${TAG}" -f name="${TAG}" -f body="$(cat notes.md)" \
-            -F generate_release_notes=true -F make_latest=true --jq .html_url
+            -F generate_release_notes=true -f make_latest=true --jq .html_url
 
   back-merge:
     name: Back-merge main → develop
