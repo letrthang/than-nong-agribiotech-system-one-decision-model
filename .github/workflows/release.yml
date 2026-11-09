@@ -101,10 +101,20 @@ jobs:
           awk -v v="${VERSION}" '
             /^## \[/ { if (p) exit; if (index($0, "## [" v "]") == 1) { p = 1; next } }
             p' CHANGELOG.md > notes.md
-          # The REST API puts `body` in front of the notes it generates from the merged PRs/commits.
+          # The notes GitHub generates from the merged PRs/commits start at the previous version tag (the highest `v*`
+          # below this one). Creating the Release with generate_release_notes=true cannot be given that tag and listed
+          # the whole history (over the 125000-character body limit → 422), so the notes are generated first and
+          # appended to the CHANGELOG section.
+          PREV=$(git tag -l 'v[0-9]*' --sort=-v:refname | grep -vxF "${TAG}" | head -n1 || true)
+          PREV_ARG=()
+          if [ -n "${PREV}" ]; then PREV_ARG=(-f previous_tag_name="${PREV}"); fi
+          gh api "repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+            -f tag_name="${TAG}" "${PREV_ARG[@]}" --jq .body > generated.md
+          printf '%s\n\n%s\n' "$(cat notes.md)" "$(cat generated.md)" > body.md
+          # `make_latest` is a string enum ("true" / "false" / "legacy"): -f, not -F (a JSON boolean is refused with 422).
           gh api "repos/${GITHUB_REPOSITORY}/releases" \
-            -f tag_name="${TAG}" -f name="${TAG}" -f body="$(cat notes.md)" \
-            -F generate_release_notes=true -f make_latest=true --jq .html_url
+            -f tag_name="${TAG}" -f name="${TAG}" -f body="$(cat body.md)" \
+            -f make_latest=true --jq .html_url
 
   back-merge:
     name: Back-merge main → develop
