@@ -8,6 +8,8 @@ see [`GITHUB_COMMIT_RULE.md`](GITHUB_COMMIT_RULE.md).
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-11-09
+
 ### Changed
 - **Simplified Gitflow.** Releases are prepared on `release/vX.Y.Z` (from `develop`; final-check fixes go directly on it) and
   merged into `main` by PR. The new `.github/workflows/release.yml` then tags `vX.Y.Z`, publishes the GitHub Release (the
@@ -37,5 +39,6 @@ and medicine. No model is trained yet.
 - **`GITHUB_COMMIT_RULE.md`** — the git flow guide and what must never be committed in this public repo.
 - **Licence** — Apache-2.0 for this repository and the released model weights.
 
-[Unreleased]: https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/compare/v0.1.0...develop
+[Unreleased]: https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/compare/v0.1.1...develop
+[0.1.1]: https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/letrthang/than-nong-agribiotech-system-one-decision-model/releases/tag/v0.1.0
