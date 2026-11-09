@@ -2,12 +2,18 @@
 
 All notable changes to Thannong-Agribiotech. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 the project uses [Semantic Versioning](https://semver.org/) — `0.x` while the model is being designed and trained, `1.0.0`
-for the first released model. Branches: `develop` (daily work) → `main` (checked) → `release` (released versions, tagged
-`vX.Y.Z`); see [`GITHUB_COMMIT_RULE.md`](GITHUB_COMMIT_RULE.md).
+for the first released model. Branches (simplified Gitflow): feature branches → `develop` (integration) → `release/vX.Y.Z`
+→ `main` (production); merging a release branch into `main` tags `vX.Y.Z` and publishes the GitHub Release automatically;
+see [`GITHUB_COMMIT_RULE.md`](GITHUB_COMMIT_RULE.md).
 
 ## [Unreleased]
 
 ### Changed
+- **Simplified Gitflow.** Releases are prepared on `release/vX.Y.Z` (from `develop`; final-check fixes go directly on it) and
+  merged into `main` by PR. The new `.github/workflows/release.yml` then tags `vX.Y.Z`, publishes the GitHub Release (the
+  CHANGELOG section + generated notes) and merges `main` back into `develop`; `.github/workflows/gitflow-guard.yml` marks a
+  PR into `main` red unless it comes from `release/vX.Y.Z` with its CHANGELOG section and an unused tag. No deployment yet.
+  `GITHUB_COMMIT_RULE.md` describes the flow with a diagram (`images/gitflow.webp`, source `images/gitflow.html`).
 - **Named as a decision model.** The repository is now `than-nong-agribiotech-system-one-decision-model` (was
   `than-nong-agribiotech-system-one-slm`; GitHub redirects the old URL), the README calls the model a System One decision
   model rather than a small language model, and links point to the renamed Laya repo

@@ -3,9 +3,9 @@
 > The bot must always ask the developer for confirmation before committing and pushing code.
 
 > [!IMPORTANT]
-> **The bot creates a new release only when the developer asks for it.** Merging into `develop` or `main` is not a
-> release: no `release` branch change, no tag and no GitHub release unless the developer explicitly asks for one. See
-> [Git flow](#git-flow).
+> **The bot prepares a new release only when the developer asks for it.** Merging into `develop` is not a release: no
+> `release/vX.Y.Z` branch and no PR into `main` unless the developer explicitly asks for one. Tags and GitHub releases are
+> created by the pipeline, never by hand. See [Branches & release flow](#branches--release-flow).
 
 > [!WARNING]
 > **This repository is PUBLIC.** Every commit, branch, PR and issue can be read by anyone and stays in git history.
@@ -13,8 +13,9 @@
 
 # GitHub Commit and Push Rules for Bot
 
-When the bot is asked to commit or push changes to this repository, it must follow these rules in order (step 1 to step 7).
-The repo follows [git flow](#git-flow): everyday work goes to **`develop`**, not `main` and never `release`.
+When the bot is asked to commit or push changes to this repository, it must follow these rules in order (step 1 to step 6).
+The repo follows the [simplified Gitflow](#branches--release-flow): everyday work goes to **`develop`**, never directly to
+`main`.
 
 1. Try to use GitHub MCP tools first to access and operate on the remote GitHub repository.
 2. Work in a **git worktree** (or a separate clone), never switch branches in the developer's main checkout. Fetch the latest
@@ -24,56 +25,111 @@ The repo follows [git flow](#git-flow): everyday work goes to **`develop`**, not
 4. Create a pull request (PR) to merge the new branch into `develop`.
 5. Merge the PR into `develop` (squash). No need to wait for approval from other developers, but stop and report if there are
    conflicts the bot cannot safely resolve.
-6. After the merge, delete the feature branch (local and remote).
-7. Check the merged `develop` (the docs render, links work; once code exists, it builds and its tests pass). When the check
-   passes, create a PR `develop` → `main` and merge it with a **merge commit** — see [Daily work](#daily-work).
+6. After the merge, delete the feature branch (local and remote), then check the merged `develop` (the docs render, links
+   work; once code exists, it builds and its tests pass). That is all: nothing goes to `main` until the developer asks for a
+   release.
 
-## Git flow
+## Branches & release flow
 
-Three long-lived branches, in this order: **`develop` → `main` → `release`** — the same flow as the
-[RAG demo project](https://github.com/letrthang/spring-ai-with-hybrid-search-and-system-one-typesafe-jev/releases) and
-[AIMTAS System One — Laya](https://huggingface.co/spaces/letrthang/aimtas-system-one-laya-slm).
+![Simplified Gitflow: feat/fix/docs branches are squash-merged into develop; release/vX.Y.Z is cut from develop, checked, and merged into main; the pipeline tags vX.Y.Z, publishes the GitHub Release and merges main back into develop](images/gitflow.webp)
+
+The diagram source is [`images/gitflow.html`](images/gitflow.html) (open it in a browser to redraw it).
+
+Two primary branches: **`develop`** (integration) and **`main`** (production). There is no UAT environment: a release branch
+is checked locally (or in staging), never deployed to a UAT. **No deployment yet** — nothing is published from this repo
+today, so a release is the tag `vX.Y.Z` + the GitHub Release (+ the back-merge into `develop`). When the models and the
+`/v1/systemone` server are ready to publish, a `deploy.yml` workflow will be added and production will deploy only from the
+tags on `main`.
 
 | Branch | What it holds | Gets its changes from |
 |---|---|---|
-| `develop` | **Daily work.** | PRs from `feat/*`, `fix/*`, `docs/*` (squash) |
-| `main` | **Checked work**: what passed the check on `develop`. The default branch people see. | PR `develop` → `main` (merge commit) |
-| `release` | **Released versions**, tagged `vX.Y.Z`. Created from `main` at the first release. When the models and the `/v1/systemone` server exist, what they publish (Hugging Face model repos, the Space) comes from here. | PR `main` → `release` (merge commit) — **only when the developer asks for a new release** |
+| `develop` | **Integration: daily work.** | PRs from `feat/*`, `fix/*`, `docs/*` (squash) |
+| `main` | **Production: released versions only**, each tagged `vX.Y.Z` by the pipeline. The default branch people see. | PR `release/vX.Y.Z` → `main` (merge commit) — **only when the developer asks for a new release** |
+| `release/vX.Y.Z` | **One release being prepared**: its CHANGELOG section and the fixes found in the final check. Deleted by the pipeline after the release. | Created from `develop`; fixes are committed directly on it |
 | `feat/*`, `fix/*`, `docs/*` | One task each, from `develop`. Deleted after the merge. | — |
 
-- Never commit directly to `develop`, `main` or `release`: every change arrives by PR.
-- Use a **merge commit** (not squash) for `develop` → `main` and `main` → `release`, so the three branches share their history
-  and the next PR between them carries only the new commits.
-- **Never create `release/*` branches.** Git cannot hold `release` and `release/…` together.
+Versions are `vX.Y.Z` ([Semantic Versioning](https://semver.org/): a fix → patch, a new feature → minor). The version lives
+only in `CHANGELOG.md` and in the tag; the repo has no `pom.xml` / `package.json` to bump.
 
-### Daily work
+### 1. Daily work — feature branches into `develop`
 
-1. Steps 1–7 above: a branch from `develop`, a PR into `develop`, check the merged `develop`, then a PR `develop` → `main`.
-2. That is all — no tag, no release until the developer asks for one.
+```bash
+git fetch origin
+git worktree add -b docs/<topic> ../wt-<topic> origin/develop
+cd ../wt-<topic>
+# edit, then stage by path (see below) and commit
+git add README.md && git commit -m "docs: <what changed>"
+git push -u origin docs/<topic>
+gh pr create --base develop --title "docs: <what changed>" --body-file pr.md
+gh pr merge <PR> --squash --delete-branch
+```
 
-### A new release — only when the developer asks
+No tag, no release, no PR into `main`.
 
-1. **CHANGELOG:** PR into `develop` that adds a `## [X.Y.Z] — YYYY-MM-DD` section to `CHANGELOG.md` (create the file at the
-   first release; move the *[Unreleased]* items into the new section). Versions follow
-   [Semantic Versioning](https://semver.org/): a fix → patch, a new feature → minor.
-2. **Check:** PR `develop` → `main` (merge commit); check `main` (once code exists: build and tests).
-3. **Release:** PR **`main` → `release`** (merge commit). At the first release, create `release` from `main` instead. When
-   something is published from `release` (a model, a server image, a Space), check that it is live and works.
-4. **Tag + GitHub release** on the head of `release`:
-   ```bash
-   gh release create vX.Y.Z --target release --title "vX.Y.Z — YYYY.MM.DD" --notes-file notes.md
-   ```
-   - No assets unless the developer asks for them, not a draft.
-   - Notes in the format of the RAG demo's releases: `### Features` / `### Fixes` / `### Documentation` as they apply; each
-     bullet starts with a **bold lead sentence**, then why and how in plain words, and a "Verified: …" note where something
-     was checked.
-5. **Next version:** PR into `develop` opening a new `## [Unreleased]` section in `CHANGELOG.md`, then `develop` → `main`.
+### 2. Release prep — `release/vX.Y.Z` from `develop` (only when the developer asks)
 
-### Urgent fix on a release (hotfix) — only when the developer asks
+```bash
+git fetch origin
+git worktree add -b release/vX.Y.Z ../wt-release origin/develop
+cd ../wt-release
+# CHANGELOG.md: move the [Unreleased] items into a new "## [X.Y.Z] — YYYY-MM-DD" section (UTC date: date -u +%F),
+# leave an empty "## [Unreleased]" above it and update the compare links at the bottom
+git add CHANGELOG.md && git commit -m "chore: release vX.Y.Z"
+git push -u origin release/vX.Y.Z
+```
 
-1. `fix/*` from `release`, the fix and its check → PR into `release` (merge commit).
-2. Then PR `release` → `main` and `main` → `develop`, so the fix is not lost. A tag and GitHub release only if the developer
-   asks for them.
+- Check the release branch locally: the docs render, the links work (once code exists: it builds and its tests pass).
+- A fix found during this final check is committed **directly on `release/vX.Y.Z`** and pushed (no PR); it reaches
+  `develop` through the back-merge.
+- Write the CHANGELOG section in the format of the
+  [RAG demo's releases](https://github.com/letrthang/spring-ai-with-hybrid-search-and-system-one-typesafe-jev/releases):
+  `### Features` / `### Fixes` / `### Documentation` as they apply; each bullet starts with a **bold lead sentence**, then
+  why and how in plain words, and a "Verified: …" note where something was checked. It becomes the GitHub Release text.
+
+### 3. Release — PR `release/vX.Y.Z` → `main`
+
+```bash
+gh pr create --base main --head release/vX.Y.Z --title "Release vX.Y.Z" --body-file pr.md
+gh pr checks <PR>          # "Gitflow guard" must be green
+gh pr merge <PR> --merge   # merge commit, never squash; the pipeline deletes the release branch
+```
+
+### 4. What the pipeline does automatically (`.github/workflows/release.yml`)
+
+When the PR `release/vX.Y.Z` → `main` is merged:
+
+1. **Tag** — creates the annotated tag `vX.Y.Z` on the merge commit on `main`.
+2. **GitHub Release** — publishes `vX.Y.Z`: the CHANGELOG section followed by the notes GitHub generates from the merged
+   PRs/commits.
+3. **Back-merge** — merges `main` into `develop` and deletes `release/vX.Y.Z`. On a conflict it opens a PR `main` →
+   `develop`, keeps the release branch and the run fails: merge that PR (merge commit), then delete `release/vX.Y.Z`.
+
+No deployment step yet. Nobody tags by hand: never run `git tag` or `gh release create` for a version.
+
+### 5. After the release
+
+```bash
+gh release view vX.Y.Z                       # the release exists, with the CHANGELOG section
+gh run list --workflow release.yml --limit 1 # the Release run is green (back-merge done)
+git fetch origin && git log --oneline -3 origin/develop
+```
+
+### Urgent fix (hotfix)
+
+There are no hotfix branches: an urgent fix is a normal small release. Create `release/vX.Y.Z+1` (the next patch version)
+from `develop`, commit the fix and its CHANGELOG section on it, then steps 3–5. Never move or reuse a tag; a bad release is
+replaced by the next patch release.
+
+### Gitflow guard and the rules
+
+The free GitHub plan has no branch protection, so `.github/workflows/gitflow-guard.yml` marks a PR into `main` red when it
+is not from `release/vX.Y.Z`, when `CHANGELOG.md` has no `## [X.Y.Z] — YYYY-MM-DD` section, or when the tag `vX.Y.Z`
+already exists.
+
+- **Never push directly to `main` or `develop`**: `develop` gets PRs (squash), `main` gets only the PR from
+  `release/vX.Y.Z` (merge commit).
+- **Never merge a PR into `main` while "Gitflow guard" is red.**
+- Never create, move or delete a tag or a GitHub Release by hand.
 
 ## What must never be committed
 
@@ -127,9 +183,11 @@ personal data in one.
 
 ## Notes
 
-- Do not commit directly to `develop`, `main` or `release`. Feature branches → `develop`, then `develop` → `main` after the
-  check, and `main` → `release` only for a new release.
-- Create a new release (`release` branch, tag, GitHub release) **only when the developer asks**.
+- Do not commit directly to `develop` or `main`. Feature branches → `develop` by PR (squash); `release/vX.Y.Z` → `main` by
+  PR (merge commit) only for a new release.
+- Prepare a new release (`release/vX.Y.Z` and its PR into `main`) **only when the developer asks**; the pipeline creates the
+  tag and the GitHub release.
 - Fetch and rebase before every push.
-- Always delete the feature branch after its PR is merged (never `develop`, `main` or `release`).
+- Always delete the feature branch after its PR is merged (never `develop` or `main`; the pipeline deletes
+  `release/vX.Y.Z`).
 - After a merge, pull the branch the PR went into.

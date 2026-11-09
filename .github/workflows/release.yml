@@ -1,0 +1,143 @@
+# Release automation (simplified Gitflow, see GITHUB_COMMIT_RULE.md).
+#
+# No deployment yet: this app is not ready to be deployed, so the release is the automatic tag `vX.Y.Z` + the GitHub
+# Release + the back-merge. Add deploy.yml (and a `deploy` job here that calls it with the tag) when the app is ready
+# to deploy.
+#
+# Runs when a PR `release/vX.Y.Z` → `main` is MERGED. No person creates the tag:
+#   1. tag    — creates the annotated tag `vX.Y.Z` on the merge commit on `main` (the version comes from the branch
+#               name and must have a `## [X.Y.Z] — YYYY-MM-DD` section in CHANGELOG.md), then publishes the GitHub
+#               Release: the CHANGELOG section followed by the notes GitHub generates from the merged PRs/commits.
+#   2. back-merge — merges `main` into `develop` (so fixes made on the release branch stay in `develop`), then
+#               deletes `release/vX.Y.Z`. On a conflict (or a refused push) it opens a PR `main` → `develop`, keeps the
+#               release branch, and fails so the owner sees it.
+# Any other PR merged into `main` does nothing here (gitflow-guard.yml already marks it red).
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: Tag + GitHub Release
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
+      sha: ${{ steps.version.outputs.sha }}
+      branch: ${{ steps.version.outputs.branch }}
+    steps:
+      - name: Checkout the merge commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+
+      - name: Version from the branch name + CHANGELOG
+        id: version
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          set -euo pipefail
+          if ! [[ "${BRANCH}" =~ ^release/v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "::error::'${BRANCH}' is not release/vX.Y.Z"
+            exit 1
+          fi
+          VERSION="${BASH_REMATCH[1]}"
+          if ! grep -qE "^## \[${VERSION//./\\.}\] (—|-) [0-9]{4}-[0-9]{2}-[0-9]{2}" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## [${VERSION}] — YYYY-MM-DD' section"
+            exit 1
+          fi
+          {
+            echo "version=${VERSION}"
+            echo "tag=v${VERSION}"
+            echo "sha=${SHA}"
+            echo "branch=${BRANCH}"
+          } >> "$GITHUB_OUTPUT"
+          echo "🏷️ v${VERSION} on ${SHA}"
+
+      - name: Create the tag
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          SHA: ${{ steps.version.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            if [ "$(git rev-list -n1 "${TAG}")" != "${SHA}" ]; then
+              echo "::error::Tag ${TAG} already exists on another commit (never reuse a version)"
+              exit 1
+            fi
+            echo "Tag ${TAG} already on ${SHA} (re-run)"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${TAG}" "${SHA}" -m "Release ${TAG}"
+          git push origin "refs/tags/${TAG}"
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            echo "Release ${TAG} already published (re-run)"
+            exit 0
+          fi
+          awk -v v="${VERSION}" '
+            /^## \[/ { if (p) exit; if (index($0, "## [" v "]") == 1) { p = 1; next } }
+            p' CHANGELOG.md > notes.md
+          # The REST API puts `body` in front of the notes it generates from the merged PRs/commits.
+          gh api "repos/${GITHUB_REPOSITORY}/releases" \
+            -f tag_name="${TAG}" -f name="${TAG}" -f body="$(cat notes.md)" \
+            -F generate_release_notes=true -F make_latest=true --jq .html_url
+
+  back-merge:
+    name: Back-merge main → develop
+    needs: tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge main into develop, delete the release branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.tag.outputs.tag }}
+          SHA: ${{ needs.tag.outputs.sha }}
+          BRANCH: ${{ needs.tag.outputs.branch }}
+        run: |
+          set -uo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin develop
+          git checkout -q -B develop origin/develop
+          if git merge --no-ff -m "chore: back-merge ${TAG} (main) into develop" "${SHA}" && git push origin develop; then
+            echo "✅ ${TAG} merged back into develop"
+            if git ls-remote --exit-code --heads origin "${BRANCH}" >/dev/null; then
+              git push origin --delete "${BRANCH}"
+            fi
+            exit 0
+          fi
+          git merge --abort 2>/dev/null || true
+          URL=$(gh pr create --base develop --head main \
+            --title "Back-merge ${TAG}: main → develop" \
+            --body "The automatic back-merge of ${TAG} failed (conflict or refused push). Merge this PR (merge commit), then delete \`${BRANCH}\`." 2>&1 || true)
+          echo "::error::Back-merge of ${TAG} needs a person: ${URL}. ${BRANCH} is kept until it is merged."
+          exit 1
